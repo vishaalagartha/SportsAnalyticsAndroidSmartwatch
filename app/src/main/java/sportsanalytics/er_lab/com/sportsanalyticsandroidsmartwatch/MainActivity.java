@@ -3,6 +3,7 @@ package sportsanalytics.er_lab.com.sportsanalyticsandroidsmartwatch;
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
 import android.widget.TextView;
+import android.content.Intent;
 
 public class MainActivity extends WearableActivity {
 
@@ -15,6 +16,8 @@ public class MainActivity extends WearableActivity {
 
         mTextView = (TextView) findViewById(R.id.text);
 
+        Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(loginIntent);
         // Enables Always-on
         setAmbientEnabled();
     }
