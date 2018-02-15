@@ -8,6 +8,7 @@ import android.app.FragmentManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +40,7 @@ public class AthleteTabActivity extends Activity {
         setContentView(R.layout.activity_athlete_tab);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
+        Log.v("TAG", "in AthleteTabActivity");
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
