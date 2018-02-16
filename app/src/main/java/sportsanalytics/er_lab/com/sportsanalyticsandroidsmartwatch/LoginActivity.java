@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import android.app.Activity;
@@ -39,14 +40,23 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static java.sql.DriverManager.println;
 
+interface LoginCallback{
+    void onLoginSuccess(JSONObject result) throws JSONException;
+    void onLoginFailure(String error);
+}
 
 public class LoginActivity extends Activity {
 
@@ -55,6 +65,8 @@ public class LoginActivity extends Activity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +96,8 @@ public class LoginActivity extends Activity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+
     }
 
     /**
@@ -126,29 +140,36 @@ public class LoginActivity extends Activity {
             // perform the user login attempt.
 
             showProgress(true);
-            new NetworkManager.UserLoginTask(email, password, getApplicationContext()) {
-                @Override
-                protected void onPostExecute(final Boolean success) {
-                    Log.d("TAG", "on post execute");
-                    showProgress(false);
-                    if (success) {
-                        String user = this.getUser();
-                        Log.d("TAG", "user" + user);
 
-                        Intent athleteIntent = new Intent(getApplicationContext(), AthleteTabActivity.class);
-                        startActivity(athleteIntent);
-                        finish();
+            new NetworkManager().login(email, password, new LoginCallback(){
+                @Override
+                public void onLoginSuccess(JSONObject result) throws JSONException {
+                    showProgress(false);
+                    Boolean success = (Boolean) result.getBoolean("success");
+                    if(success) {
+                        Boolean isCoach = (Boolean) Objects.equals(result.getString("role"), "coach");
+                        if(Objects.equals(result.getString("role"), "coach")){
+                            User user = new User(Role.COACH, "", "",
+                                    "", "", (String) result.getString("token"),
+                                    new ArrayList<Team>());
+
+                            Intent teamsIntent = new Intent(getApplicationContext(),
+                                    TeamsActivity.class);
+                            //teamsIntent.putExtra("User", (Parcelable) user);
+                            startActivity(teamsIntent);
+                        }
                     } else {
                         mPasswordView.setError(getString(R.string.error_incorrect_password));
                         mPasswordView.requestFocus();
                     }
                 }
-
                 @Override
-                protected void onCancelled() {
-                    showProgress(false);
+                public void onLoginFailure(String error){
+
+                    Log.e("ERROR:", error);
                 }
-            }.execute((Void) null);
+            }, getApplicationContext());
+
         }
     }
 
@@ -189,5 +210,6 @@ public class LoginActivity extends Activity {
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
+
 }
 

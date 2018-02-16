@@ -44,7 +44,9 @@
         <activity
             android:name=".AthleteTabActivity"
             android:label="@string/title_activity_athelete_tab" />
-
+        <activity
+            android:name=".TeamsActivity"
+            android:label="@string/title_activity_teams"></activity>
     </application>
 
 </manifest>
