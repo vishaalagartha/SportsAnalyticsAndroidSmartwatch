@@ -30,12 +30,10 @@ public class NetworkManager {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    String loginUrl = "http://er-lab.cs.ucla.edu:80/mobile/login";
-    String teamUrl = "http://er-lab.cs.ucla.edu:80/mobile/teamlist";
 
     public void login(final String email, final String password, final LoginCallback callback, final Context mApplicationContext) {
         final RequestQueue loginQueue = Volley.newRequestQueue(mApplicationContext);
-        StringRequest loginRequest = new StringRequest(Request.Method.POST, loginUrl,
+        StringRequest loginRequest = new StringRequest(Request.Method.POST, new URLs().getLoginUrl(),
                 new Response.Listener<String>() {
 
                     @Override
@@ -58,7 +56,7 @@ public class NetworkManager {
                                 if(response.has("token")) {
                                     final String token = response.getString("token");
                                     RequestQueue teamQueue = Volley.newRequestQueue(mApplicationContext);
-                                    StringRequest teamRequest = new StringRequest(Request.Method.POST, teamUrl,
+                                    StringRequest teamRequest = new StringRequest(Request.Method.POST, new URLs().getTeamsListUrl(),
                                             new Response.Listener<String>()
                                             {
                                                 @Override
@@ -70,12 +68,10 @@ public class NetworkManager {
                                                         if(success) {
                                                             ArrayList<Team> teams = new ArrayList<>();
                                                             JSONArray teamsArray = response.getJSONArray("access");
-                                                            Log.d("TAG", teamsArray.toString());
                                                             for(int i=0; i<teamsArray.length(); i++) {
                                                                 JSONObject t = teamsArray.getJSONObject(i);
                                                                 teams.add(new Team(t.getString("name"), t.getString("sport")));
                                                             }
-                                                            Log.d("TAG", teams.toString());
                                                             User user = new User(role, email, password,
                                                                 firstName, lastName, token, cookie, teams);
                                                             callback.onLoginSuccess(user);
@@ -144,7 +140,32 @@ public class NetworkManager {
     }
 
 
-    public void getTeamImage(final String teamType, final Context mApplicationContext) {
-        final RequestQueue teamImageQueue = Volley.newRequestQueue(mApplicationContext);
+    public void request(final String url, final int method, final Map<String, String> params,
+                        final Map<String, String> headers, final Context mApplicationContext) {
+        final RequestQueue queue = Volley.newRequestQueue(mApplicationContext);
+        StringRequest request = new StringRequest(method, url,
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String r) {
+                        try {
+                            JSONObject response = new JSONObject(r);
+                            Boolean success = (Boolean) response.getBoolean("success");
+                            if (success) {
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError e) {
+                    }
+                }
+
+        );
     }
 }

@@ -20,6 +20,14 @@ final class Team implements  Serializable {
         mName = name;
         mSport = sport;
     }
+
+    public String getmName() {
+        return mName;
+    }
+
+    public String getmSport() {
+        return mSport;
+    }
 }
 
 public class User implements Serializable {
