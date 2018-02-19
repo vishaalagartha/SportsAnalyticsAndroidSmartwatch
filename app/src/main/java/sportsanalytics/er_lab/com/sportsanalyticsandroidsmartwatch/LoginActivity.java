@@ -43,6 +43,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +55,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 import static java.sql.DriverManager.println;
 
 interface LoginCallback{
-    void onLoginSuccess(JSONObject result) throws JSONException;
+    void onLoginSuccess(User user);
     void onLoginFailure(String error);
 }
 
@@ -143,21 +144,12 @@ public class LoginActivity extends Activity {
 
             new NetworkManager().login(email, password, new LoginCallback(){
                 @Override
-                public void onLoginSuccess(JSONObject result) throws JSONException {
+                public void onLoginSuccess(User user) {
                     showProgress(false);
-                    Boolean success = (Boolean) result.getBoolean("success");
-                    if(success) {
-                        Boolean isCoach = (Boolean) Objects.equals(result.getString("role"), "coach");
-                        if(Objects.equals(result.getString("role"), "coach")){
-                            User user = new User(Role.COACH, "", "",
-                                    "", "", (String) result.getString("token"),
-                                    new ArrayList<Team>());
-
-                            Intent teamsIntent = new Intent(getApplicationContext(),
-                                    TeamsActivity.class);
-                            //teamsIntent.putExtra("User", (Parcelable) user);
-                            startActivity(teamsIntent);
-                        }
+                    if(user!=null) {
+                        Intent teamsIntent = new Intent(getApplicationContext(), TeamsActivity.class);
+                        teamsIntent.putExtra("user", (Serializable) user);
+                        startActivity(teamsIntent);
                     } else {
                         mPasswordView.setError(getString(R.string.error_incorrect_password));
                         mPasswordView.requestFocus();

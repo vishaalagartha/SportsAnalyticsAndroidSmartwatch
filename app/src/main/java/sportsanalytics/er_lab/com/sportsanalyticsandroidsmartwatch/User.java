@@ -1,5 +1,6 @@
 package sportsanalytics.er_lab.com.sportsanalyticsandroidsmartwatch;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -11,21 +12,34 @@ enum Role {
     ATHLETE
 }
 
-final class Team {
-    String name;
-    String sport;
+final class Team implements  Serializable {
+    String mName;
+    String mSport;
+
+    Team(String name, String sport) {
+        mName = name;
+        mSport = sport;
+    }
 }
 
-public class User {
+public class User implements Serializable {
     Role mRole;
     String mUsername;
     String mPassword;
     String mFirstName;
     String mLastName;
     String mToken;
+    String mCookie;
     ArrayList<Team> mTeams;
 
-    User(Role role, String username, String password, String firstName, String lastName, String token, ArrayList<Team> teams){
-
+    User(Role role, String username, String password, String firstName, String lastName, String token, String cookie, ArrayList<Team> teams){
+        mRole = role;
+        mUsername = username;
+        mPassword = password;
+        mFirstName = firstName;
+        mLastName = lastName;
+        mToken = token;
+        mCookie = cookie;
+        mTeams = teams;
     }
 }
