@@ -54,10 +54,12 @@ import java.util.concurrent.ExecutionException;
 import static android.Manifest.permission.READ_CONTACTS;
 import static java.sql.DriverManager.println;
 
-interface LoginCallback{
+interface LoginInterface {
     void onLoginSuccess(User user);
     void onLoginFailure(String error);
+
 }
+
 
 public class LoginActivity extends Activity {
 
@@ -142,7 +144,7 @@ public class LoginActivity extends Activity {
 
             showProgress(true);
 
-            new NetworkManager().login(email, password, new LoginCallback(){
+            new NetworkManager().login(email, password, new LoginInterface(){
                 @Override
                 public void onLoginSuccess(User user) {
                     showProgress(false);

@@ -50,4 +50,10 @@ public class User implements Serializable {
         mCookie = cookie;
         mTeams = teams;
     }
+
+    User(Role role, String firstName, String lastName) {
+        mRole = role;
+        mFirstName = firstName;
+        mLastName = lastName;
+    }
 }

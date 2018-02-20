@@ -34,19 +34,23 @@ public class AthleteTabActivity extends Activity {
      */
     private ViewPager mViewPager;
 
+    private User mAthlete;
+    private Team mTeam;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_athlete_tab);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        Log.v("TAG", "in AthleteTabActivity");
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        mAthlete = (User) getIntent().getSerializableExtra("athlete");
+        mTeam = (Team) getIntent().getSerializableExtra("team");
 
     }
 
@@ -103,7 +107,21 @@ public class AthleteTabActivity extends Activity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_athlete_tab, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
+                case 1:
+                    textView.setText("Wellness Survey");
+                    break;
+                case 2:
+                    textView.setText("Soreness");
+                    break;
+                case 3:
+                    textView.setText("RPE");
+                    break;
+                case 4:
+                    textView.setText("Jump");
+                    break;
+
+            }
             return rootView;
         }
     }
@@ -121,27 +139,19 @@ public class AthleteTabActivity extends Activity {
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+
+            switch(position) {
+                case 0: return WellnessFragment.newInstance(mAthlete.mFirstName, mAthlete.mLastName, mTeam);
+                case 1: return PlaceholderFragment.newInstance(position+1);
+                case 2: return RPEFragment.newInstance(mAthlete.mFirstName, mAthlete.mLastName, mTeam);
+                case 3: return PlaceholderFragment.newInstance(position+1);
+            }
+            return PlaceholderFragment.newInstance(position+1);
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-            }
-            return null;
+            return 4;
         }
     }
 }

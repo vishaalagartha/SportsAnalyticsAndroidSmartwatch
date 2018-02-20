@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class NetworkManager {
      */
 
 
-    public void login(final String email, final String password, final LoginCallback callback, final Context mApplicationContext) {
+    public void login(final String email, final String password, final LoginInterface callback, final Context mApplicationContext) {
         final RequestQueue loginQueue = Volley.newRequestQueue(mApplicationContext);
         StringRequest loginRequest = new StringRequest(Request.Method.POST, new URLs().getLoginUrl(),
                 new Response.Listener<String>() {
@@ -142,7 +143,7 @@ public class NetworkManager {
     }
 
 
-    public void request(final String url, final int method, final Map<String, String> params,
+    public void request(final RequestInterface requestInterface, final String url, final int method, final Map<String, String> params,
                         final Map<String, String> headers, final Context mApplicationContext) {
         final RequestQueue queue = Volley.newRequestQueue(mApplicationContext);
 
@@ -151,20 +152,7 @@ public class NetworkManager {
 
                     @Override
                     public void onResponse(String r) {
-                        Log.d("TAG", url + method + params.toString() + headers.toString());
-                        Log.d("TAG", "got response" + r);
-                        try {
-
-                            JSONObject response = new JSONObject(r);
-                            Boolean success = (Boolean) response.getBoolean("success");
-                            if (success) {
-                                Log.d("TAG", r);
-                            }
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        requestInterface.onRequestSuccess(r);
                     }
                 },
                 new Response.ErrorListener() {

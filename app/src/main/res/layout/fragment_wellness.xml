@@ -1,0 +1,100 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="sportsanalytics.er_lab.com.sportsanalyticsandroidsmartwatch.WellnessFragment">
+
+    <TextView
+        android:id="@+id/wellnessSurveyTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:text="Wellness Survey" />
+
+    <TextView
+        android:id="@+id/fatigueText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Fatigue" />
+
+    <SeekBar
+        android:id="@+id/fatigueStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:max="5"
+        android:progress="0" />
+
+    <TextView
+        android:id="@+id/sorenessText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:text="Soreness" />
+
+
+    <SeekBar
+        android:id="@+id/sorenessStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:max="5"
+        android:progress="0" />
+
+    <TextView
+        android:id="@+id/moodText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="130dp"
+        android:text="Mood" />
+
+
+    <SeekBar
+        android:id="@+id/moodStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:max="5"
+        android:progress="0" />
+
+    <TextView
+        android:id="@+id/stressText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="180dp"
+        android:text="Stress" />
+
+    <SeekBar
+        android:id="@+id/stressStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:max="5"
+        android:progress="0" />
+
+    <TextView
+        android:id="@+id/sleepText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="230dp"
+
+        android:text="Sleep" />
+
+    <SeekBar
+        android:id="@+id/sleepStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="250dp"
+        android:max="5"
+        android:progress="0" />
+
+
+
+
+
+
+
+</FrameLayout>

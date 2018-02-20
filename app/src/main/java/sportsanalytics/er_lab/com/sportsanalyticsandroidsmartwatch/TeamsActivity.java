@@ -29,12 +29,22 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+interface RequestInterface {
+    void onRequestSuccess(String response);
+    void onRequestFailure(String error);
+}
 
 public class TeamsActivity extends Activity {
 
@@ -78,25 +88,19 @@ public class TeamsActivity extends Activity {
         return true;
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment implements View.OnClickListener {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+    public static class TeamFragment extends Fragment implements View.OnClickListener {
+
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public PlaceholderFragment() {
+        public TeamFragment() {
         }
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber, Team team) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
+        public static TeamFragment newInstance(int sectionNumber, Team team) {
+            TeamFragment fragment = new TeamFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             args.putSerializable("team", team);
@@ -120,18 +124,39 @@ public class TeamsActivity extends Activity {
         }
         @Override
         public void onClick(View v) {
-            Team team = (Team) getArguments().getSerializable("team");
+            final Team team = (Team) getArguments().getSerializable("team");
             Map<String, String> params = new HashMap<String, String>();
             Map<String, String> headers = new HashMap<String, String>();
-            params.put("teamname", team.getmName());
-            //headers.put("Cookie", mUser.mCookie);
-            headers.put("Authorization", mUser.mToken);
+            headers.put("Cookie", mUser.mCookie);
 
-            Log.d("TAG", team.getmName() + " " + mUser.mCookie);
-            Log.d("TAG", new URLs().getAthletesUrl());
-            new NetworkManager().request(new URLs().getAthletesUrl(), Request.Method.GET, params, headers, getActivity().getApplicationContext());
-            Intent athletesIntent = new Intent(getActivity().getApplicationContext(), AthletesActivity.class);
-            startActivity(athletesIntent);
+            new NetworkManager().request(new RequestInterface() {
+                @Override
+                public void onRequestSuccess(String response) {
+                    Log.d("TAG", "response: " + response);
+                    try {
+                        JSONArray jsonArray = new JSONArray(response);
+                        ArrayList<String> athletesArray = new ArrayList<String>();
+                        if (jsonArray != null) {
+                            for (int i=0;i<jsonArray.length();i++){
+                                athletesArray.add(jsonArray.getString(i));
+                            }
+                        }
+                        Intent athletesIntent = new Intent(getActivity().getApplicationContext(), AthletesActivity.class);
+                        athletesIntent.putExtra("team", team);
+                        athletesIntent.putExtra("athletes", athletesArray);
+                        startActivity(athletesIntent);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void onRequestFailure(String error) {
+                    Log.e("ERRROR: ", error);
+                }
+            }, new URLs().getAthletesUrl() + "?team=" + team.mName, Request.Method.GET, params, headers, getActivity().getApplicationContext());
+
         }
     }
 
@@ -152,7 +177,7 @@ public class TeamsActivity extends Activity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1, mUser.mTeams.get(position));
+            return TeamFragment.newInstance(position + 1, mUser.mTeams.get(position));
         }
 
         @Override

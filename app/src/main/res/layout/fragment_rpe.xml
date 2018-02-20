@@ -1,0 +1,55 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="sportsanalytics.er_lab.com.sportsanalyticsandroidsmartwatch.RPEFragment">
+
+
+    <EditText
+        android:id="@+id/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        android:text="Duration (min):" />
+
+    <SeekBar
+        android:id="@+id/scale"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="78dp"
+        android:max="10"
+        android:progress="5" />
+
+    <CheckBox
+        android:id="@+id/practice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="Practice" />
+
+    <CheckBox
+        android:id="@+id/training"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:text="Training" />
+
+    <CheckBox
+        android:id="@+id/competition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:text="Competition" />
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="145dp"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:text="Submit" />
+
+
+</FrameLayout>

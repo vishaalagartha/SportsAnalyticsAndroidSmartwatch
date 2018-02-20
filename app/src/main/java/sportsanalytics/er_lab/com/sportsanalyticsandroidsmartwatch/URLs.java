@@ -24,6 +24,6 @@ public class URLs {
     }
 
     public String getAthletesUrl() {
-        return mScheme + "://" +  mHost + ":" + mPort + "/athletes?teamname=hello";
+        return mScheme + "://" +  mHost + ":" + mPort + "/data/getPlayers";
     }
 }
