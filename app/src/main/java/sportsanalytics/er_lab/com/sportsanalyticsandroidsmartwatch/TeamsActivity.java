@@ -7,6 +7,8 @@ import android.app.FragmentTransaction;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -24,12 +26,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TeamsActivity extends Activity {
 
@@ -116,8 +121,17 @@ public class TeamsActivity extends Activity {
         @Override
         public void onClick(View v) {
             Team team = (Team) getArguments().getSerializable("team");
+            Map<String, String> params = new HashMap<String, String>();
+            Map<String, String> headers = new HashMap<String, String>();
+            params.put("teamname", team.getmName());
+            //headers.put("Cookie", mUser.mCookie);
+            headers.put("Authorization", mUser.mToken);
 
-            Log.d("TAG", team.getmSport());
+            Log.d("TAG", team.getmName() + " " + mUser.mCookie);
+            Log.d("TAG", new URLs().getAthletesUrl());
+            new NetworkManager().request(new URLs().getAthletesUrl(), Request.Method.GET, params, headers, getActivity().getApplicationContext());
+            Intent athletesIntent = new Intent(getActivity().getApplicationContext(), AthletesActivity.class);
+            startActivity(athletesIntent);
         }
     }
 

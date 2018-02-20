@@ -1,5 +1,6 @@
 package sportsanalytics.er_lab.com.sportsanalyticsandroidsmartwatch;
 
+import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
@@ -30,6 +31,7 @@ public class NetworkManager {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
+
 
     public void login(final String email, final String password, final LoginCallback callback, final Context mApplicationContext) {
         final RequestQueue loginQueue = Volley.newRequestQueue(mApplicationContext);
@@ -143,17 +145,22 @@ public class NetworkManager {
     public void request(final String url, final int method, final Map<String, String> params,
                         final Map<String, String> headers, final Context mApplicationContext) {
         final RequestQueue queue = Volley.newRequestQueue(mApplicationContext);
+
         StringRequest request = new StringRequest(method, url,
                 new Response.Listener<String>() {
 
                     @Override
                     public void onResponse(String r) {
+                        Log.d("TAG", url + method + params.toString() + headers.toString());
+                        Log.d("TAG", "got response" + r);
                         try {
+
                             JSONObject response = new JSONObject(r);
                             Boolean success = (Boolean) response.getBoolean("success");
                             if (success) {
-
+                                Log.d("TAG", r);
                             }
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -163,9 +170,21 @@ public class NetworkManager {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError e) {
+                        e.printStackTrace();
                     }
                 }
 
-        );
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return headers;
+            }
+        };
+        queue.add(request);
     }
 }

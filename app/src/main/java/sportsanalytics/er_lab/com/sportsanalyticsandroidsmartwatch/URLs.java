@@ -22,4 +22,8 @@ public class URLs {
     public String getTeamImageUrl(String teamType) {
         return mScheme + "://" +  mHost + ":" + mPort + "/images/" + teamType + ".jpg";
     }
+
+    public String getAthletesUrl() {
+        return mScheme + "://" +  mHost + ":" + mPort + "/athletes?teamname=hello";
+    }
 }

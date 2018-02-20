@@ -11,6 +11,8 @@ public class MainActivity extends WearableActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        AppManager mManager = new AppManager();
+
         Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(loginIntent);
         // Enables Always-on

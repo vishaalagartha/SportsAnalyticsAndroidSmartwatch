@@ -147,6 +147,8 @@ public class LoginActivity extends Activity {
                 public void onLoginSuccess(User user) {
                     showProgress(false);
                     if(user!=null) {
+                        AppManager manager = (AppManager) getApplication();
+                        manager.setActiveUser(user);
                         Intent teamsIntent = new Intent(getApplicationContext(), TeamsActivity.class);
                         teamsIntent.putExtra("user", (Serializable) user);
                         startActivity(teamsIntent);
