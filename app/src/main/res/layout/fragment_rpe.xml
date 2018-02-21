@@ -9,6 +9,9 @@
         android:id="@+id/duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="40dp"
+        android:textSize="10dp"
         android:ems="10"
         android:inputType="number"
         android:text="Duration (min):" />
@@ -16,7 +19,7 @@
     <SeekBar
         android:id="@+id/scale"
         android:layout_width="match_parent"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="25dp"
         android:layout_height="78dp"
         android:max="10"
         android:progress="5" />
@@ -25,28 +28,34 @@
         android:id="@+id/practice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:textSize="10dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginStart="30dp"
         android:text="Practice" />
 
     <CheckBox
         android:id="@+id/training"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="90dp"
+        android:textSize="10dp"
+        android:layout_marginTop="95dp"
+        android:layout_marginStart="30dp"
         android:text="Training" />
 
     <CheckBox
         android:id="@+id/competition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
+        android:textSize="10dp"
+        android:layout_marginTop="125dp"
+        android:layout_marginStart="30dp"
         android:text="Competition" />
 
     <Button
         android:id="@+id/submitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="145dp"
+        android:layout_marginTop="155dp"
         android:orientation="vertical"
         android:layout_gravity="center_horizontal"
         android:text="Submit" />
