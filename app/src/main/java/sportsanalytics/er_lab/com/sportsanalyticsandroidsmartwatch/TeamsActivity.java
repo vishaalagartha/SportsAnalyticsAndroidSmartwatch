@@ -129,10 +129,11 @@ public class TeamsActivity extends Activity {
             Map<String, String> headers = new HashMap<String, String>();
             headers.put("Cookie", mUser.mCookie);
 
+            headers.put("Authorization", mUser.mToken);
+
             new NetworkManager().request(new RequestInterface() {
                 @Override
                 public void onRequestSuccess(String response) {
-                    Log.d("TAG", "response: " + response);
                     try {
                         JSONArray jsonArray = new JSONArray(response);
                         ArrayList<String> athletesArray = new ArrayList<String>();
@@ -153,9 +154,9 @@ public class TeamsActivity extends Activity {
 
                 @Override
                 public void onRequestFailure(String error) {
-                    Log.e("ERRROR: ", error);
+                    Log.e("ERROR: ", error);
                 }
-            }, new URLs().getAthletesUrl() + "?team=" + team.mName, Request.Method.GET, params, headers, getActivity().getApplicationContext());
+            }, new URLs().getAthletesUrl(team.mName), Request.Method.GET, params, headers, getActivity().getApplicationContext());
 
         }
     }

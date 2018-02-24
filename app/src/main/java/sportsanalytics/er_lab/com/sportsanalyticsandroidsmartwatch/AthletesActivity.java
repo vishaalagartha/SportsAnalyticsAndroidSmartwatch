@@ -39,7 +39,6 @@ public class AthletesActivity extends Activity {
         for (int i = 0; i < athletesArray.size(); i++) {
             try {
                 jObject = new JSONObject(athletesArray.get(i));
-                Log.d("TAG", jObject.toString());
                 athletesStrings.add(jObject.getString("firstName") + " " + jObject.getString("lastName"));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -55,7 +54,6 @@ public class AthletesActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                 String s = mainListView.getItemAtPosition(i).toString();
-                Log.d("TAG", Integer.toString(i));
                 JSONObject jObject = null;
                 try {
                     jObject = new JSONObject(athletesArray.get(i));

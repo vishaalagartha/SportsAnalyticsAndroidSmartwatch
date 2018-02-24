@@ -91,7 +91,6 @@ public class NetworkManager {
                                             {
                                                 @Override
                                                 public void onErrorResponse(VolleyError e) {
-                                                    Log.d("TAG", e.getMessage());
                                                     callback.onLoginFailure(e.getMessage());
                                                 }
                                             }

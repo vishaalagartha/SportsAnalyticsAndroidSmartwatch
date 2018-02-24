@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -124,35 +125,38 @@ public class RPEFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         //do what you want to do when button is clicked
         Log.d("TAG", "submit");
-/*
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("team", mTeam.getmName());
+
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("session", "practice");
+        data.put("minutes", 4);
+        data.put("RPE", 5);
+
+        params.put("data", data);
+        params.put("firstname", mFirstName);
+        params.put("lastname", mLastName);
+        params.put("timestamp", 0);
+
+        HashMap<String, String> emptyParams = new HashMap<>();
+
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "a");
+
+
         new NetworkManager().request(new RequestInterface() {
             @Override
             public void onRequestSuccess(String response) {
                 Log.d("TAG", "response: " + response);
-                try {
-                    JSONArray jsonArray = new JSONArray(response);
-                    ArrayList<String> athletesArray = new ArrayList<String>();
-                    if (jsonArray != null) {
-                        for (int i=0;i<jsonArray.length();i++){
-                            athletesArray.add(jsonArray.getString(i));
-                        }
-                    }
-                    Intent athletesIntent = new Intent(getActivity().getApplicationContext(), AthletesActivity.class);
-                    athletesIntent.putExtra("team", team);
-                    athletesIntent.putExtra("athletes", athletesArray);
-                    startActivity(athletesIntent);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
             }
 
             @Override
             public void onRequestFailure(String error) {
                 Log.e("ERROR: ", error);
             }
-        }, new URLs().getAthletesUrl() + "?team=" + team.mName, Request.Method.POST, params, headers, getActivity().getApplicationContext());
+        }, new URLs().getRPEUrl(params), Request.Method.POST, emptyParams, headers, getActivity().getApplicationContext());
 
-    }*/
     }
+
 }

@@ -144,7 +144,7 @@ public class AthleteTabActivity extends Activity {
                 case 0: return WellnessFragment.newInstance(mAthlete.mFirstName, mAthlete.mLastName, mTeam);
                 case 1: return PlaceholderFragment.newInstance(position+1);
                 case 2: return RPEFragment.newInstance(mAthlete.mFirstName, mAthlete.mLastName, mTeam);
-                case 3: return PlaceholderFragment.newInstance(position+1);
+                case 3: return JumpFragment.newInstance(mAthlete.mFirstName, mAthlete.mLastName, mTeam);
             }
             return PlaceholderFragment.newInstance(position+1);
         }
