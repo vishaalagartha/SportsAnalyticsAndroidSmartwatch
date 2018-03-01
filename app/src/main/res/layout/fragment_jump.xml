@@ -4,10 +4,32 @@
     android:layout_height="match_parent"
     tools:context="sportsanalytics.er_lab.com.sportsanalyticsandroidsmartwatch.JumpFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <Button
+        android:id="@+id/jumpButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:text="Jump" />
 
+    <ProgressBar
+        android:id="@+id/jumpProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/jumpHeightText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="150dp"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintTop_creator="1" />
 </FrameLayout>

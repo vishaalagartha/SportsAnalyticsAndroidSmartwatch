@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
 /**
@@ -37,6 +39,17 @@ public class JumpFragment extends Fragment implements SensorEventListener{
     private Sensor mSensor;
     private int mSensorType;
     private long mShakeTime = 0;
+
+    private static final float GRAVITY_THRESHOLD = 7.0f;
+    private static final long TIME_THRESHOLD_NS = 2000000000;
+    private long mLastTime = 0;
+    private boolean mUp = false;
+
+    private Button jumpButton;
+    private Boolean isJumping = false;
+    private TextView jumpTextView;
+    private ProgressBar jumpProgress;
+
 
 
     public JumpFragment() {
@@ -75,7 +88,27 @@ public class JumpFragment extends Fragment implements SensorEventListener{
         // Inflate the layout for this fragment
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        return inflater.inflate(R.layout.fragment_jump, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_jump, container, false);
+        jumpButton = (Button) view.findViewById(R.id.jumpButton);
+        jumpButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                if(!isJumping) {
+                    onResume();
+                    jumpButton.setText("JUMPING");
+                }
+                else {
+                    onPause();
+                    jumpButton.setText("JUMP");
+                }
+
+            }
+        });
+
+        jumpProgress = (ProgressBar) view.findViewById(R.id.jumpProgressBar);
+        jumpTextView = (TextView) view.findViewById(R.id.jumpHeightText);
+        jumpTextView.setText("0");
+        return view;
     }
 
 
@@ -95,22 +128,35 @@ public class JumpFragment extends Fragment implements SensorEventListener{
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
             return;
-        long now = System.currentTimeMillis();
-
-        if((now - mShakeTime) > SHAKE_WAIT_TIME_MS) {
-            mShakeTime = now;
-
-            double x = sensorEvent.values[0];
-            double y = sensorEvent.values[1];
-            double z = sensorEvent.values[2];
-
-            Log.d("TAG", String.valueOf(x) + " " + String.valueOf(y) + " " + String.valueOf(z));
-
-        }
+        detectJump(sensorEvent.values[0], sensorEvent.timestamp);
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
         return;
+    }
+
+    private void detectJump(float xValue, long timestamp) {
+        if ((Math.abs(xValue) > GRAVITY_THRESHOLD)) {
+            if(timestamp - mLastTime < TIME_THRESHOLD_NS && mUp != (xValue > 0)) {
+                double jumpTime = (timestamp-mLastTime)/1.0e9;
+                double height = 100 * 1.0 / 8.0 * 9.807 * jumpTime * jumpTime / 2.54;
+                jumpTextView.setText(Double.toString(height));
+                Log.d("TAG", Double.toString(height));
+                onJumpDetected(!mUp);
+            }
+            mUp = xValue > 0;
+            mLastTime = timestamp;
+        }
+    }
+
+    private void onJumpDetected(boolean up) {
+        // we only count a pair of up and down as one successful movement
+        if (up) {
+            Log.d("TAG", "up");
+            return;
+        }
+        Log.d("TAG", "down");
+
     }
 }
