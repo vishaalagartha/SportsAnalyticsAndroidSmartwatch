@@ -1,0 +1,24 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context="sportsanalytics.er_lab.com.sportsanalyticsandroidsmartwatch.SorenessFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/list_end_padding"
+        android:paddingTop="@dimen/list_start_padding">
+
+        <ListView
+            android:id="@+id/musclesListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:nestedScrollingEnabled="true"
+            android:scrollbars="vertical"/>
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

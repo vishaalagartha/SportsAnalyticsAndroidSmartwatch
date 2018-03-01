@@ -141,9 +141,10 @@ public class JumpFragment extends Fragment implements SensorEventListener{
             if(timestamp - mLastTime < TIME_THRESHOLD_NS && mUp != (xValue > 0)) {
                 double jumpTime = (timestamp-mLastTime)/1.0e9;
                 double height = 100 * 1.0 / 8.0 * 9.807 * jumpTime * jumpTime / 2.54;
-                jumpTextView.setText(Double.toString(height));
-                Log.d("TAG", Double.toString(height));
+                jumpTextView.setText(Double.toString(height).substring(0, 5) + " in");
+                jumpButton.setText("JUMP");
                 onJumpDetected(!mUp);
+                onPause();
             }
             mUp = xValue > 0;
             mLastTime = timestamp;
