@@ -89,11 +89,9 @@ public class RPEFragment extends Fragment implements View.OnClickListener {
         params.put("team", mTeam.getmName());
         params.put("firstname", mFirstName);
         params.put("lastname", mLastName);
-        params.put("timestamp", 0);
-
+        params.put("timestamp", System.currentTimeMillis()/1000);
 
         HashMap<String, String> headers = new HashMap<>();
-
 
         new NetworkManager().jsonObjectRequest(new RequestInterface() {
             @Override

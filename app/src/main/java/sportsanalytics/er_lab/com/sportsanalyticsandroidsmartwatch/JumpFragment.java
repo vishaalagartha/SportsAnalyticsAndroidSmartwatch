@@ -41,13 +41,13 @@ public class JumpFragment extends Fragment implements SensorEventListener{
     private Team mTeam;
     private SensorManager mSensorManager;
     private Sensor mSensor;
-    private int mSensorType;
-    private long mShakeTime = 0;
+
 
     private static final float GRAVITY_THRESHOLD = 7.0f;
     private static final long TIME_THRESHOLD_NS = 2000000000;
     private long mLastTime = 0;
     private boolean mUp = false;
+    private double height = 0.0;
 
     private Button jumpButton;
     private Boolean isJumping = false;
@@ -120,13 +120,13 @@ public class JumpFragment extends Fragment implements SensorEventListener{
                 HashMap<String, Object> params = new HashMap<>();
 
                 HashMap<String, Object> data = new HashMap<>();
-                data.put("height", 1);
+                data.put("height", height);
 
                 params.put("data", data);
                 params.put("team", mTeam.getmName());
                 params.put("firstname", mFirstName);
                 params.put("lastname", mLastName);
-                params.put("timestamp", 0);
+                params.put("timestamp", System.currentTimeMillis()/1000);
 
                 HashMap<String, String> emptyParams = new HashMap<>();
 
@@ -182,7 +182,7 @@ public class JumpFragment extends Fragment implements SensorEventListener{
         if ((Math.abs(xValue) > GRAVITY_THRESHOLD)) {
             if(timestamp - mLastTime < TIME_THRESHOLD_NS && mUp != (xValue > 0)) {
                 double jumpTime = (timestamp-mLastTime)/1.0e9;
-                double height = 100 * 1.0 / 8.0 * 9.807 * jumpTime * jumpTime / 2.54;
+                height = 100 * 1.0 / 8.0 * 9.807 * jumpTime * jumpTime / 2.54;
                 jumpTextView.setText(Double.toString(height).substring(0, 5) + " in");
                 jumpButton.setText("JUMP");
                 jumpProgress.setVisibility(View.GONE);

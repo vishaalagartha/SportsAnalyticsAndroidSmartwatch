@@ -19,6 +19,7 @@ import android.widget.ListView;
 
 import com.android.volley.Request;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +41,7 @@ public class SorenessFragment extends Fragment {
     private ArrayAdapter<String> listAdapter;
     private ListView musclesListView;
     private Button sorenessSubmitButton;
+    private JSONObject muscles = new JSONObject();
 
 
     public SorenessFragment() {
@@ -74,6 +76,24 @@ public class SorenessFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_soreness, container, false);
 
+        try {
+            muscles.put("Biceps", 0);
+            muscles.put("Deltoids", 0);
+            muscles.put("Gastrocnemuis", 0);
+            muscles.put("Gluteals", 0);
+            muscles.put("Hamstrings", 0);
+            muscles.put("Latissiumus Dorsi", 0);
+            muscles.put("Obliques", 0);
+            muscles.put("Pectorals", 0);
+            muscles.put("Quadriceps", 0);
+            muscles.put("Rectus Abdominus", 0);
+            muscles.put("Trapezius", 0);
+            muscles.put("Triceps", 0);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
         musclesStrings.add("Biceps");
         musclesStrings.add("Deltoids");
         musclesStrings.add("Gastrocnemuis");
@@ -97,17 +117,31 @@ public class SorenessFragment extends Fragment {
                 int color = Color.TRANSPARENT;
                 int ORANGE = Color.rgb(255,165,0);
                 int YELLOW = Color.rgb(255,215,0);
+                int jsonVal = 0;
                 Drawable background = view.getBackground();
                 if (background instanceof ColorDrawable)
                     color = ((ColorDrawable) background).getColor();
-                if(color==Color.TRANSPARENT)
+                if(color==Color.TRANSPARENT) {
                     view.setBackgroundColor(YELLOW);
-                else if (color==YELLOW)
+                    jsonVal = 1;
+                }
+                else if (color==YELLOW) {
                     view.setBackgroundColor(ORANGE);
-                else if(color==ORANGE)
+                    jsonVal = 2;
+                }
+                else if(color==ORANGE) {
                     view.setBackgroundColor(Color.RED);
-                else
+                    jsonVal = 3;
+                }
+                else {
                     view.setBackgroundColor(Color.TRANSPARENT);
+                    jsonVal = 0;
+                }
+                try {
+                    muscles.put(musclesStrings.get(Integer.valueOf((int) l)), jsonVal);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -118,17 +152,13 @@ public class SorenessFragment extends Fragment {
                 HashMap<String, Object> params = new HashMap<>();
 
                 HashMap<String, Object> data = new HashMap<>();
-                data.put("session", "practice");
-                data.put("minutes", 4);
-                data.put("RPE", 5);
+                data.put("muscles", muscles);
 
                 params.put("data", data);
                 params.put("team", mTeam.getmName());
                 params.put("firstname", mFirstName);
                 params.put("lastname", mLastName);
-                params.put("timestamp", 0);
-
-                HashMap<String, String> emptyParams = new HashMap<>();
+                params.put("timestamp", System.currentTimeMillis()/1000);
 
                 HashMap<String, String> headers = new HashMap<>();
 

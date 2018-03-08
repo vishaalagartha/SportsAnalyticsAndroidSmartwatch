@@ -131,7 +131,8 @@ public class NetworkManager {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-
+                params.put("email", email);
+                params.put("password", password);
                 return params;
             }
             @Override

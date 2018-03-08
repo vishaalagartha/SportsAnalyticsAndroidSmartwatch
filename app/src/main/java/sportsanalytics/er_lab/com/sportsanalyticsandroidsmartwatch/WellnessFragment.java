@@ -82,9 +82,7 @@ public class WellnessFragment extends Fragment {
                 params.put("team", mTeam.getmName());
                 params.put("firstname", mFirstName);
                 params.put("lastname", mLastName);
-                params.put("timestamp", 0);
-
-                HashMap<String, String> emptyParams = new HashMap<>();
+                params.put("timestamp", System.currentTimeMillis()/1000);
 
                 HashMap<String, String> headers = new HashMap<>();
 

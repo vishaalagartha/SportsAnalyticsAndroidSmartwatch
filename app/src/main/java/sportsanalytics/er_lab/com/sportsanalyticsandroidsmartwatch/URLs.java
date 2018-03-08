@@ -19,12 +19,7 @@ public class URLs {
     private String mScheme = "http";
 
     public String getLoginUrl() {
-        try {
-            return mScheme + "://" +  mHost + ":" + mPort + "/mobile/login?email=" + URLEncoder.encode("sajad10@ucla.edu", StandardCharsets.UTF_8.toString()) + "&password=" + URLEncoder.encode("erlab", StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return mScheme + "://" +  mHost + ":" + mPort + "/mobile/login";
     }
 
     public String getTeamsListUrl() {
