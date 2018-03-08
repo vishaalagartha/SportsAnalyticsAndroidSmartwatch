@@ -5,7 +5,7 @@
     android:fillViewport="true"
     tools:context="sportsanalytics.er_lab.com.sportsanalyticsandroidsmartwatch.SorenessFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,8 +17,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
             android:nestedScrollingEnabled="true"
             android:scrollbars="vertical"/>
-    </LinearLayout>
 
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <Button android:id="@+id/submitSorenessButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="65dp"
+                android:layout_marginTop="100dp"
+                android:text="Submit"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal">
+            </Button>
+        </RelativeLayout>
+    </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

@@ -4,19 +4,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.SeekBar;
+
+import com.android.volley.Request;
+
+import java.util.HashMap;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link WellnessFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link WellnessFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class WellnessFragment extends Fragment {
     private static final String ARG_FIRST_NAME = "firstname";
     private static final String ARG_LAST_NAME = "lastname";
@@ -27,8 +26,9 @@ public class WellnessFragment extends Fragment {
     private String mLastName;
     private Team mTeam;
 
+    private Button wellnessSubmitButton;
+    private SeekBar moodBar, fatigueBar, sorenessBar, stressBar, sleepBar;
 
-    private OnFragmentInteractionListener mListener;
 
     public WellnessFragment() {
         // Required empty public constructor
@@ -58,44 +58,52 @@ public class WellnessFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_wellness, container, false);
+        View view = inflater.inflate(R.layout.fragment_wellness, container, false);
+        moodBar = (SeekBar) view.findViewById(R.id.moodStatus);
+        fatigueBar = (SeekBar) view.findViewById(R.id.fatigueStatus);
+        sorenessBar = (SeekBar) view.findViewById(R.id.sorenessStatus);
+        stressBar = (SeekBar) view.findViewById(R.id.stressStatus);
+        sleepBar = (SeekBar) view.findViewById(R.id.sleepStatus);
+
+        wellnessSubmitButton = (Button) view.findViewById(R.id.submitWellnessButton);
+        wellnessSubmitButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Log.d("TAG", "submit wellness");
+                HashMap<String, Object> params = new HashMap<>();
+
+                HashMap<String, Object> data = new HashMap<>();
+                data.put("mood", moodBar.getProgress());
+                data.put("fatigue", fatigueBar.getProgress());
+                data.put("soreness", sorenessBar.getProgress());
+                data.put("stress", stressBar.getProgress());
+                data.put("sleep", sleepBar.getProgress());
+
+                params.put("data", data);
+                params.put("team", mTeam.getmName());
+                params.put("firstname", mFirstName);
+                params.put("lastname", mLastName);
+                params.put("timestamp", 0);
+
+                HashMap<String, String> emptyParams = new HashMap<>();
+
+                HashMap<String, String> headers = new HashMap<>();
+
+
+                new NetworkManager().jsonObjectRequest(new RequestInterface() {
+                    @Override
+                    public void onRequestSuccess(String response) {
+                        Log.d("TAG", "response: " + response);
+                    }
+
+                    @Override
+                    public void onRequestFailure(String error) {
+                        Log.e("ERROR: ", error);
+                    }
+                }, new URLs().getWellnessURL(), params, headers, getActivity().getApplicationContext());
+
+            }
+        });
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            //do nothing
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

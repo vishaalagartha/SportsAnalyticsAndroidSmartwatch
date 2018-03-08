@@ -14,23 +14,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+
+import com.android.volley.Request;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SorenessFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SorenessFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SorenessFragment extends Fragment {
     private static final String ARG_FIRST_NAME = "firstname";
     private static final String ARG_LAST_NAME = "lastname";
@@ -43,8 +39,8 @@ public class SorenessFragment extends Fragment {
     ArrayList<String> musclesStrings = new ArrayList<>();
     private ArrayAdapter<String> listAdapter;
     private ListView musclesListView;
+    private Button sorenessSubmitButton;
 
-    private OnFragmentInteractionListener mListener;
 
     public SorenessFragment() {
         // Required empty public constructor
@@ -114,43 +110,44 @@ public class SorenessFragment extends Fragment {
                     view.setBackgroundColor(Color.TRANSPARENT);
             }
         });
+
+        sorenessSubmitButton = (Button) view.findViewById(R.id.submitSorenessButton);
+        sorenessSubmitButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Log.d("TAG", "submit soreness");
+                HashMap<String, Object> params = new HashMap<>();
+
+                HashMap<String, Object> data = new HashMap<>();
+                data.put("session", "practice");
+                data.put("minutes", 4);
+                data.put("RPE", 5);
+
+                params.put("data", data);
+                params.put("team", mTeam.getmName());
+                params.put("firstname", mFirstName);
+                params.put("lastname", mLastName);
+                params.put("timestamp", 0);
+
+                HashMap<String, String> emptyParams = new HashMap<>();
+
+                HashMap<String, String> headers = new HashMap<>();
+
+
+                new NetworkManager().jsonObjectRequest(new RequestInterface() {
+                    @Override
+                    public void onRequestSuccess(String response) {
+                        Log.d("TAG", "response: " + response);
+                    }
+
+                    @Override
+                    public void onRequestFailure(String error) {
+                        Log.e("ERROR: ", error);
+                    }
+                }, new URLs().getSorenessURL(), params, headers, getActivity().getApplicationContext());
+
+            }
+        });
+
         return view;
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

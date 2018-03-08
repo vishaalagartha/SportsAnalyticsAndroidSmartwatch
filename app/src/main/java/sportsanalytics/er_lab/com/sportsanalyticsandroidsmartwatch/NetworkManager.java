@@ -2,6 +2,7 @@ package sportsanalytics.er_lab.com.sportsanalyticsandroidsmartwatch;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -11,6 +12,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -42,6 +44,7 @@ public class NetworkManager {
                     @Override
                     public void onResponse(String r) {
                         try {
+                            Log.d("TAG", new URLs().getLoginUrl());
                             final String cookie = r.split("\n")[0].split(";")[0];
                             JSONObject response = new JSONObject(r.split("\n")[1]);
 
@@ -55,9 +58,11 @@ public class NetworkManager {
                                         response.getString("lastName") : null;
                                 final Role role = response.has("role") && response.getString("role").equals("coach") ?
                                         Role.COACH : Role.ATHLETE;
-
                                 if(response.has("token")) {
                                     final String token = response.getString("token");
+                                    Log.d("TAG", "got token " + token);
+                                    Log.d("TAG", "got token " + r.toString());
+
                                     RequestQueue teamQueue = Volley.newRequestQueue(mApplicationContext);
                                     StringRequest teamRequest = new StringRequest(Request.Method.POST, new URLs().getTeamsListUrl(),
                                             new Response.Listener<String>()
@@ -98,9 +103,10 @@ public class NetworkManager {
 
                                         @Override
                                         public Map<String, String> getHeaders() throws AuthFailureError {
-                                            Map<String, String> params = new HashMap<String, String>();
-                                            params.put("Cookie", cookie);
-                                            return params;
+                                            Map<String, String> headers = new HashMap<String, String>();
+                                            headers.put("Authorization", token);
+                                            headers.put("Cookie", cookie);
+                                            return headers;
                                         }
 
                                     };
@@ -125,8 +131,6 @@ public class NetworkManager {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("password", password);
-                params.put("email", email);
 
                 return params;
             }
@@ -145,12 +149,12 @@ public class NetworkManager {
     public void request(final RequestInterface requestInterface, final String url, final int method, final Map<String, String> params,
                         final Map<String, String> headers, final Context mApplicationContext) {
         final RequestQueue queue = Volley.newRequestQueue(mApplicationContext);
-
+        final String token = User.getToken();
         StringRequest request = new StringRequest(method, url,
                 new Response.Listener<String>() {
-
                     @Override
                     public void onResponse(String r) {
+                        Log.d("TAG", url + " " + params + " " + headers);
                         requestInterface.onRequestSuccess(r);
                     }
                 },
@@ -167,8 +171,41 @@ public class NetworkManager {
                 return params;
             }
 
+
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
+                headers.put("Authorization", token);
+                return headers;
+            }
+        };
+        queue.add(request);
+    }
+
+    public void jsonObjectRequest(final RequestInterface requestInterface, final String url, final HashMap<String, Object> params,
+                        final Map<String, String> headers, final Context mApplicationContext) {
+        final RequestQueue queue = Volley.newRequestQueue(mApplicationContext);
+        final String token = User.getToken();
+        final String cookie = User.getCookie();
+        JsonObjectRequest request = new JsonObjectRequest(url, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject r) {
+                        requestInterface.onRequestSuccess(r.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError e) {
+                        e.printStackTrace();
+                    }
+                }
+
+        ) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                headers.put("Authorization", token);
+                headers.put("Cookie", cookie);
                 return headers;
             }
         };

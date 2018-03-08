@@ -31,13 +31,13 @@ final class Team implements  Serializable {
 }
 
 public class User implements Serializable {
-    Role mRole;
-    String mUsername;
-    String mPassword;
-    String mFirstName;
-    String mLastName;
-    String mToken;
-    String mCookie;
+    static Role mRole;
+    static String mUsername;
+    static String mPassword;
+    static String mFirstName;
+    static String mLastName;
+    static String mToken;
+    static String mCookie;
     ArrayList<Team> mTeams;
 
     User(Role role, String username, String password, String firstName, String lastName, String token, String cookie, ArrayList<Team> teams){
@@ -55,5 +55,13 @@ public class User implements Serializable {
         mRole = role;
         mFirstName = firstName;
         mLastName = lastName;
+    }
+
+    static String getToken() {
+        return mToken;
+    }
+
+    static String getCookie() {
+        return mCookie;
     }
 }

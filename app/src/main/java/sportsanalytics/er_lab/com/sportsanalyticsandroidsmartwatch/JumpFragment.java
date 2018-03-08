@@ -16,6 +16,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+
+import java.util.HashMap;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,7 +54,7 @@ public class JumpFragment extends Fragment implements SensorEventListener{
     private TextView jumpTextView;
     private ProgressBar jumpProgress;
 
-
+    private Button jumpSubmitButton;
 
     public JumpFragment() {
         // Required empty public constructor
@@ -95,17 +99,55 @@ public class JumpFragment extends Fragment implements SensorEventListener{
             public void onClick(View view) {
                 if(!isJumping) {
                     onResume();
+                    jumpProgress.setVisibility(View.VISIBLE);
                     jumpButton.setText("JUMPING");
                 }
                 else {
                     onPause();
+                    jumpProgress.setVisibility(View.GONE);
+
                     jumpButton.setText("JUMP");
                 }
 
             }
         });
 
+        jumpSubmitButton = (Button) view.findViewById(R.id.submitJumpButton);
+        jumpSubmitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("TAG", "submit jump");
+                HashMap<String, Object> params = new HashMap<>();
+
+                HashMap<String, Object> data = new HashMap<>();
+                data.put("height", 1);
+
+                params.put("data", data);
+                params.put("team", mTeam.getmName());
+                params.put("firstname", mFirstName);
+                params.put("lastname", mLastName);
+                params.put("timestamp", 0);
+
+                HashMap<String, String> emptyParams = new HashMap<>();
+
+                HashMap<String, String> headers = new HashMap<>();
+
+                new NetworkManager().jsonObjectRequest(new RequestInterface() {
+                    @Override
+                    public void onRequestSuccess(String response) {
+                        Log.d("TAG", "response: " + response);
+                    }
+
+                    @Override
+                    public void onRequestFailure(String error) {
+                        Log.e("ERROR: ", error);
+                    }
+                }, new URLs().getJumpURL(), params, headers, getActivity().getApplicationContext());
+            }
+        });
+
         jumpProgress = (ProgressBar) view.findViewById(R.id.jumpProgressBar);
+        jumpProgress.setVisibility(View.GONE);
         jumpTextView = (TextView) view.findViewById(R.id.jumpHeightText);
         jumpTextView.setText("0");
         return view;
@@ -143,6 +185,7 @@ public class JumpFragment extends Fragment implements SensorEventListener{
                 double height = 100 * 1.0 / 8.0 * 9.807 * jumpTime * jumpTime / 2.54;
                 jumpTextView.setText(Double.toString(height).substring(0, 5) + " in");
                 jumpButton.setText("JUMP");
+                jumpProgress.setVisibility(View.GONE);
                 onJumpDetected(!mUp);
                 onPause();
             }
