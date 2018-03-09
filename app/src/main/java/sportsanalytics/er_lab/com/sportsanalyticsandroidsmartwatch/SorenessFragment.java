@@ -36,6 +36,7 @@ public class SorenessFragment extends Fragment {
     private String mFirstName;
     private String mLastName;
     private Team mTeam;
+    static AppManager appManager = null;
 
     ArrayList<String> musclesStrings = new ArrayList<>();
     private ArrayAdapter<String> listAdapter;
@@ -67,7 +68,7 @@ public class SorenessFragment extends Fragment {
             mLastName = getArguments().getString(ARG_LAST_NAME);
             mTeam = (Team) getArguments().getSerializable(ARG_TEAM);
         }
-
+        appManager = (AppManager) getActivity().getApplication();
 
     }
 
@@ -163,7 +164,7 @@ public class SorenessFragment extends Fragment {
                 HashMap<String, String> headers = new HashMap<>();
 
 
-                new NetworkManager().jsonObjectRequest(new RequestInterface() {
+                appManager.getNetworkManager().jsonObjectRequest(new RequestInterface() {
                     @Override
                     public void onRequestSuccess(String response) {
                         Log.d("TAG", "response: " + response);

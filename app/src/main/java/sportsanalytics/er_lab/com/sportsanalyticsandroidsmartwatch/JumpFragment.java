@@ -39,6 +39,9 @@ public class JumpFragment extends Fragment implements SensorEventListener{
     private String mFirstName;
     private String mLastName;
     private Team mTeam;
+    static AppManager appManager = null;
+
+
     private SensorManager mSensorManager;
     private Sensor mSensor;
 
@@ -84,6 +87,7 @@ public class JumpFragment extends Fragment implements SensorEventListener{
             mLastName = getArguments().getString(ARG_LAST_NAME);
             mTeam = (Team) getArguments().getSerializable(ARG_TEAM);
         }
+        appManager = (AppManager) getActivity().getApplication();
     }
 
     @Override
@@ -132,7 +136,7 @@ public class JumpFragment extends Fragment implements SensorEventListener{
 
                 HashMap<String, String> headers = new HashMap<>();
 
-                new NetworkManager().jsonObjectRequest(new RequestInterface() {
+                appManager.getNetworkManager().jsonObjectRequest(new RequestInterface() {
                     @Override
                     public void onRequestSuccess(String response) {
                         Log.d("TAG", "response: " + response);
@@ -182,7 +186,7 @@ public class JumpFragment extends Fragment implements SensorEventListener{
         if ((Math.abs(xValue) > GRAVITY_THRESHOLD)) {
             if(timestamp - mLastTime < TIME_THRESHOLD_NS && mUp != (xValue > 0)) {
                 double jumpTime = (timestamp-mLastTime)/1.0e9;
-                height = 100 * 1.0 / 8.0 * 9.807 * jumpTime * jumpTime / 2.54;
+                height = 100 * 9.807 * jumpTime * jumpTime / 2.54;
                 jumpTextView.setText(Double.toString(height).substring(0, 5) + " in");
                 jumpButton.setText("JUMP");
                 jumpProgress.setVisibility(View.GONE);

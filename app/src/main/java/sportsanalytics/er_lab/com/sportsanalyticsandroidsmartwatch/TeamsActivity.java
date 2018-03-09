@@ -63,12 +63,14 @@ public class TeamsActivity extends Activity {
      */
     private ViewPager mViewPager;
     private static User mUser;
+    static AppManager appManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teams);
         mUser = (User) getIntent().getSerializableExtra("user");
+        appManager = (AppManager) getApplication();
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -127,11 +129,8 @@ public class TeamsActivity extends Activity {
             final Team team = (Team) getArguments().getSerializable("team");
             Map<String, String> params = new HashMap<String, String>();
             Map<String, String> headers = new HashMap<String, String>();
-            headers.put("Cookie", mUser.mCookie);
 
-            headers.put("Authorization", mUser.mToken);
-
-            new NetworkManager().request(new RequestInterface() {
+            appManager.getNetworkManager().request(new RequestInterface() {
                 @Override
                 public void onRequestSuccess(String response) {
                     try {

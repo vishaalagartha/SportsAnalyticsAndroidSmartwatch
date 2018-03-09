@@ -10,6 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 
@@ -29,7 +33,16 @@ public class RPEFragment extends Fragment implements View.OnClickListener {
     private String mFirstName;
     private String mLastName;
     private Team mTeam;
+    static AppManager appManager = null;
+
+    private EditText duration;
+    private SeekBar rpeScale;
+    private CheckBox isPractice;
+    private CheckBox isTraining;
+    private CheckBox isCompetition;
+
     private Button submitRPEButton;
+
 
     public RPEFragment() {
         // Required empty public constructor
@@ -59,7 +72,7 @@ public class RPEFragment extends Fragment implements View.OnClickListener {
             mLastName = getArguments().getString(ARG_LAST_NAME);
             mTeam = (Team) getArguments().getSerializable(ARG_TEAM);
         }
-
+        appManager = (AppManager) getActivity().getApplication();
     }
 
     @Override
@@ -67,6 +80,13 @@ public class RPEFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_rpe, container, false);
+
+        duration = (EditText) view.findViewById(R.id.duration);
+        rpeScale = (SeekBar) view.findViewById(R.id.scale);
+        isPractice = (CheckBox) view.findViewById(R.id.practice);
+        isTraining = (CheckBox) view.findViewById(R.id.training);
+        isCompetition = (CheckBox) view.findViewById(R.id.competition);
+
         submitRPEButton = (Button) view.findViewById(R.id.submitRPEButton);
         submitRPEButton.setOnClickListener(this);
 
@@ -81,9 +101,11 @@ public class RPEFragment extends Fragment implements View.OnClickListener {
         HashMap<String, Object> params = new HashMap<>();
 
         HashMap<String, Object> data = new HashMap<>();
-        data.put("session", "practice");
-        data.put("minutes", 4);
-        data.put("RPE", 5);
+        data.put("RPE", rpeScale.getProgress());
+        data.put("minutes", duration.getText());
+        if(isPractice.isActivated()) data.put("session", "practice");
+        else if(isTraining.isActivated()) data.put("session", "training");
+        else if(isCompetition.isActivated()) data.put("session", "competition");
 
         params.put("data", data);
         params.put("team", mTeam.getmName());
@@ -93,7 +115,7 @@ public class RPEFragment extends Fragment implements View.OnClickListener {
 
         HashMap<String, String> headers = new HashMap<>();
 
-        new NetworkManager().jsonObjectRequest(new RequestInterface() {
+        appManager.getNetworkManager().jsonObjectRequest(new RequestInterface() {
             @Override
             public void onRequestSuccess(String response) {
                 Log.d("TAG", "response: " + response);

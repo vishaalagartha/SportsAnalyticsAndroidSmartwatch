@@ -37,17 +37,15 @@ public class User implements Serializable {
     static String mFirstName;
     static String mLastName;
     static String mToken;
-    static String mCookie;
     ArrayList<Team> mTeams;
 
-    User(Role role, String username, String password, String firstName, String lastName, String token, String cookie, ArrayList<Team> teams){
+    User(Role role, String username, String password, String firstName, String lastName, String token, ArrayList<Team> teams){
         mRole = role;
         mUsername = username;
         mPassword = password;
         mFirstName = firstName;
         mLastName = lastName;
         mToken = token;
-        mCookie = cookie;
         mTeams = teams;
     }
 
@@ -61,7 +59,7 @@ public class User implements Serializable {
         return mToken;
     }
 
-    static String getCookie() {
-        return mCookie;
-    }
+    static String getUsername() { return mUsername; }
+
+    static String getPassword() {return mPassword; }
 }

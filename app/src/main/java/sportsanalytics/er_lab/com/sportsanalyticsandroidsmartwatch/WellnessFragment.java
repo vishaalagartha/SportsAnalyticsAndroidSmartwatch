@@ -25,6 +25,7 @@ public class WellnessFragment extends Fragment {
     private String mFirstName;
     private String mLastName;
     private Team mTeam;
+    static AppManager appManager = null;
 
     private Button wellnessSubmitButton;
     private SeekBar moodBar, fatigueBar, sorenessBar, stressBar, sleepBar;
@@ -52,6 +53,8 @@ public class WellnessFragment extends Fragment {
             mLastName = getArguments().getString(ARG_LAST_NAME);
             mTeam = (Team) getArguments().getSerializable(ARG_TEAM);
         }
+        appManager = (AppManager) getActivity().getApplication();
+
     }
 
     @Override
@@ -87,7 +90,7 @@ public class WellnessFragment extends Fragment {
                 HashMap<String, String> headers = new HashMap<>();
 
 
-                new NetworkManager().jsonObjectRequest(new RequestInterface() {
+                appManager.getNetworkManager().jsonObjectRequest(new RequestInterface() {
                     @Override
                     public void onRequestSuccess(String response) {
                         Log.d("TAG", "response: " + response);

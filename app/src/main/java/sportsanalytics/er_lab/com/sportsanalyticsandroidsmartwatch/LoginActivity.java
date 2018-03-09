@@ -55,11 +55,9 @@ import static android.Manifest.permission.READ_CONTACTS;
 import static java.sql.DriverManager.println;
 
 interface LoginInterface {
-    void onLoginSuccess(User user);
-    void onLoginFailure(String error);
-
+    Boolean onLoginSuccess(User user);
+    Boolean onLoginFailure(String error);
 }
-
 
 public class LoginActivity extends Activity {
 
@@ -143,26 +141,30 @@ public class LoginActivity extends Activity {
             // perform the user login attempt.
 
             showProgress(true);
+            final AppManager manager = (AppManager) getApplication();
 
-            new NetworkManager().login(email, password, new LoginInterface(){
+            manager.getNetworkManager().login(email, password, new LoginInterface(){
                 @Override
-                public void onLoginSuccess(User user) {
+                public Boolean onLoginSuccess(User user) {
                     showProgress(false);
                     if(user!=null) {
-                        AppManager manager = (AppManager) getApplication();
                         manager.setActiveUser(user);
+                        manager.saveActiveUser(getApplicationContext());
                         Intent teamsIntent = new Intent(getApplicationContext(), TeamsActivity.class);
                         teamsIntent.putExtra("user", (Serializable) user);
                         startActivity(teamsIntent);
+                        return true;
                     } else {
                         mPasswordView.setError(getString(R.string.error_incorrect_password));
                         mPasswordView.requestFocus();
+                        return false;
                     }
                 }
                 @Override
-                public void onLoginFailure(String error){
+                public Boolean onLoginFailure(String error){
 
                     Log.e("ERROR:", error);
+                    return false;
                 }
             }, getApplicationContext());
 
@@ -171,14 +173,9 @@ public class LoginActivity extends Activity {
 
 
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
