@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.squareup.picasso.Picasso;
@@ -79,6 +80,8 @@ public class TeamsActivity extends Activity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        Toast.makeText(getApplicationContext(), "Logged in successfully", Toast.LENGTH_SHORT);
 
     }
 
@@ -160,10 +163,6 @@ public class TeamsActivity extends Activity {
         }
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private User mUser;
@@ -175,8 +174,7 @@ public class TeamsActivity extends Activity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
+
             return TeamFragment.newInstance(position + 1, mUser.mTeams.get(position));
         }
 

@@ -30,10 +30,6 @@ import java.util.Map;
  */
 
 public class NetworkManager {
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
 
     private CookieManager manager = new CookieManager();
 

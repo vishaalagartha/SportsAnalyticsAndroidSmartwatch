@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 
@@ -167,11 +168,13 @@ public class SorenessFragment extends Fragment {
                 appManager.getNetworkManager().jsonObjectRequest(new RequestInterface() {
                     @Override
                     public void onRequestSuccess(String response) {
-                        Log.d("TAG", "response: " + response);
+                        Toast.makeText(getActivity().getApplicationContext(), "Submitted", Toast.LENGTH_SHORT);
                     }
 
                     @Override
                     public void onRequestFailure(String error) {
+                        Toast.makeText(getActivity().getApplicationContext(), "Failed to submit", Toast.LENGTH_SHORT);
+
                         Log.e("ERROR: ", error);
                     }
                 }, new URLs().getSorenessURL(), params, headers, getActivity().getApplicationContext());

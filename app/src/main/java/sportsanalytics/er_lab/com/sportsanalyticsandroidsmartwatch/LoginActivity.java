@@ -55,8 +55,8 @@ import static android.Manifest.permission.READ_CONTACTS;
 import static java.sql.DriverManager.println;
 
 interface LoginInterface {
-    Boolean onLoginSuccess(User user);
-    Boolean onLoginFailure(String error);
+    void onLoginSuccess(User user);
+    void onLoginFailure(String error);
 }
 
 public class LoginActivity extends Activity {
@@ -145,7 +145,7 @@ public class LoginActivity extends Activity {
 
             manager.getNetworkManager().login(email, password, new LoginInterface(){
                 @Override
-                public Boolean onLoginSuccess(User user) {
+                public void onLoginSuccess(User user) {
                     showProgress(false);
                     if(user!=null) {
                         manager.setActiveUser(user);
@@ -153,18 +153,15 @@ public class LoginActivity extends Activity {
                         Intent teamsIntent = new Intent(getApplicationContext(), TeamsActivity.class);
                         teamsIntent.putExtra("user", (Serializable) user);
                         startActivity(teamsIntent);
-                        return true;
                     } else {
                         mPasswordView.setError(getString(R.string.error_incorrect_password));
                         mPasswordView.requestFocus();
-                        return false;
                     }
                 }
                 @Override
-                public Boolean onLoginFailure(String error){
+                public void onLoginFailure(String error){
 
                     Log.e("ERROR:", error);
-                    return false;
                 }
             }, getApplicationContext());
 

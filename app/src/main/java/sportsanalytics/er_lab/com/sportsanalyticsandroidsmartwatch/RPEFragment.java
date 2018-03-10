@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 
@@ -118,11 +119,13 @@ public class RPEFragment extends Fragment implements View.OnClickListener {
         appManager.getNetworkManager().jsonObjectRequest(new RequestInterface() {
             @Override
             public void onRequestSuccess(String response) {
-                Log.d("TAG", "response: " + response);
+                Toast.makeText(getActivity().getApplicationContext(), "Submitted", Toast.LENGTH_SHORT);
             }
 
             @Override
             public void onRequestFailure(String error) {
+                Toast.makeText(getActivity().getApplicationContext(), "Failed to submit", Toast.LENGTH_SHORT);
+
                 Log.e("ERROR: ", error);
             }
         }, new URLs().getRPEUrl(), params, headers, getActivity().getApplicationContext());

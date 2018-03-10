@@ -21,29 +21,23 @@ public class MainActivity extends WearableActivity {
 
         mManager.getNetworkManager().login(email, password, new LoginInterface() {
             @Override
-            public Boolean onLoginSuccess(User user) {
+            public void onLoginSuccess(User user) {
                 if(user!=null) {
-                    Log.d("TAG", "setting active user");
-                    mManager.setActiveUser(user);
                     mManager.setActiveUser(user);
                     mManager.saveActiveUser(context);
                     Intent teamsIntent = new Intent(context, TeamsActivity.class);
                     teamsIntent.putExtra("user", (Serializable) user);
                     startActivity(teamsIntent);
-                    return true;
                 } else {
                     Intent loginIntent = new Intent(context, LoginActivity.class);
                     startActivity(loginIntent);
-
                 }
-                return false;
             }
 
             @Override
-            public Boolean onLoginFailure(String error) {
+            public void onLoginFailure(String error) {
                 Intent loginIntent = new Intent(context, LoginActivity.class);
                 startActivity(loginIntent);
-                return false;
             }
         }, getApplicationContext());
     }

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 
@@ -93,11 +94,12 @@ public class WellnessFragment extends Fragment {
                 appManager.getNetworkManager().jsonObjectRequest(new RequestInterface() {
                     @Override
                     public void onRequestSuccess(String response) {
-                        Log.d("TAG", "response: " + response);
+                        Toast.makeText(getActivity().getApplicationContext(), "Submitted", Toast.LENGTH_SHORT);
                     }
 
                     @Override
                     public void onRequestFailure(String error) {
+                        Toast.makeText(getActivity().getApplicationContext(), "Failed to submit", Toast.LENGTH_SHORT);
                         Log.e("ERROR: ", error);
                     }
                 }, new URLs().getWellnessURL(), params, headers, getActivity().getApplicationContext());

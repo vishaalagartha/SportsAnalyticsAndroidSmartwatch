@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 
@@ -139,11 +140,12 @@ public class JumpFragment extends Fragment implements SensorEventListener{
                 appManager.getNetworkManager().jsonObjectRequest(new RequestInterface() {
                     @Override
                     public void onRequestSuccess(String response) {
-                        Log.d("TAG", "response: " + response);
+                        Toast.makeText(getActivity().getApplicationContext(), "Submitted", Toast.LENGTH_SHORT);
                     }
 
                     @Override
                     public void onRequestFailure(String error) {
+                        Toast.makeText(getActivity().getApplicationContext(), "Failed to submit", Toast.LENGTH_SHORT);
                         Log.e("ERROR: ", error);
                     }
                 }, new URLs().getJumpURL(), params, headers, getActivity().getApplicationContext());
