@@ -1,6 +1,7 @@
 package sportsanalytics.er_lab.com.sportsanalyticsandroidsmartwatch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -8,18 +9,22 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import static java.lang.Integer.min;
 
 
 /**
@@ -45,20 +50,21 @@ public class JumpFragment extends Fragment implements SensorEventListener{
 
     private SensorManager mSensorManager;
     private Sensor mSensor;
-
+    private List accelerationsList = new ArrayList<Double>();
+    private List timestampsList = new ArrayList<Double>();
 
     private static final float GRAVITY_THRESHOLD = 7.0f;
     private static final long TIME_THRESHOLD_NS = 2000000000;
     private long mLastTime = 0;
-    private boolean mUp = false;
     private double height = 0.0;
 
     private Button jumpButton;
-    private Boolean isJumping = false;
     private TextView jumpTextView;
     private ProgressBar jumpProgress;
 
-    private Button jumpSubmitButton;
+    private ImageButton jumpSubmitButton;
+    private Boolean detect = false;
+
 
     public JumpFragment() {
         // Required empty public constructor
@@ -97,27 +103,86 @@ public class JumpFragment extends Fragment implements SensorEventListener{
         // Inflate the layout for this fragment
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
         View view = inflater.inflate(R.layout.fragment_jump, container, false);
         jumpButton = (Button) view.findViewById(R.id.jumpButton);
         jumpButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                if(!isJumping) {
-                    onResume();
+                if (!detect) {
+                    detect = true;
+                    Log.d("TAG", "Start Detecting");
                     jumpProgress.setVisibility(View.VISIBLE);
-                    jumpButton.setText("JUMPING");
-                }
-                else {
-                    onPause();
-                    jumpProgress.setVisibility(View.GONE);
+                    jumpButton.setText("STOP JUMP");
+                } else {
+                    Log.d("TAG", "End Detecting");
+                    double accelerations[] = new double[accelerationsList.size()];
+                    for(int i=0; i<accelerationsList.size(); i++) {
+                        accelerations[i] = (double) accelerationsList.get(i);
+                    }
+                    List<Integer> max_indices = Peaks.findPeaks(accelerations, 50, 20.0);
+                    int i1 = 0;
+                    int i2 = 0;
+                    double peak1 = 0;
+                    double peak2 = 0;
+                    // find two maxes in accelerations
+                    for(int i=0; i<max_indices.size(); i++) {
+                        double val = accelerations[max_indices.get(i)];
+                        if (val > peak1)
+                        {
+                            peak2 = peak1;
+                            i2 = i1;
+                            peak1 = val;
+                            i1 = max_indices.get(i);
+                        }
 
-                    jumpButton.setText("JUMP");
+                        else if (val > peak2
+                                && val != peak1) {
+                            peak2 = val;
+                            i2 = max_indices.get(i);
+                        }
+                    }
+                    Log.d("TAG", Integer.toString(i1) + " " + Integer.toString(i2));
+                    if(i1>i2) {
+                        int temp = i2;
+                        i2 = i1;
+                        i1 = temp;
+                    }
+                    Boolean prev_positive = true;
+                    long t1 = 0;
+                    long t2 = 0;
+                    int min_width = 30;
+                    // find where we cross x-axis
+                    for(int i=0; i<accelerations.length; i++) {
+                        if(i>i1 && i<i2) {
+                            double val = accelerations[i];
+                            // found first timestamp
+                            if(prev_positive && val<9.807 && t1==0) {
+                                t1 = (long) timestampsList.get(i);
+                            }
+                            // decrement min width
+                            else if(t1!=0 && t2==0 && min_width>0){
+                                min_width--;
+                            }
+                            // found second timestamp
+                            else if(t1!=0 && t2==0 && val>9.807 && min_width==0){
+                                t2 = (long) timestampsList.get(i);
+                            }
+                        }
+                    }
+
+                    Log.d("TAG", "Peak 1: " + peak1 + " " + i1 + " " + t1);
+                    Log.d("TAG", "Peak 2: " + peak2 + " " + i2 + " " + t2);
+                    Double fallTime = (t2 - t1)/(2.0*1E9);
+                    height = 100.0/(2.0*2.54) * 9.807 * fallTime * fallTime;
+                    Log.d("TAG", Double.toString(height) + " " + Double.toString(fallTime));
+                    jumpTextView.setText(Double.toString(height).substring(0, min(4, Double.toString(height).length())) + " in");
+                    reset();
                 }
 
             }
         });
 
-        jumpSubmitButton = (Button) view.findViewById(R.id.submitJumpButton);
+
+        jumpSubmitButton = (ImageButton) view.findViewById(R.id.submitJumpButton);
         jumpSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,7 +196,7 @@ public class JumpFragment extends Fragment implements SensorEventListener{
                 params.put("team", mTeam.getmName());
                 params.put("firstname", mFirstName);
                 params.put("lastname", mLastName);
-                params.put("timestamp", System.currentTimeMillis()/1000);
+                params.put("timestamp", System.currentTimeMillis() / 1000);
 
                 HashMap<String, String> emptyParams = new HashMap<>();
 
@@ -140,12 +205,12 @@ public class JumpFragment extends Fragment implements SensorEventListener{
                 appManager.getNetworkManager().jsonObjectRequest(new RequestInterface() {
                     @Override
                     public void onRequestSuccess(String response) {
-                        Toast.makeText(getActivity().getApplicationContext(), "Submitted", Toast.LENGTH_SHORT);
+                        Toast.makeText(getActivity().getApplicationContext(), "Submitted", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onRequestFailure(String error) {
-                        Toast.makeText(getActivity().getApplicationContext(), "Failed to submit", Toast.LENGTH_SHORT);
+                        Toast.makeText(getActivity().getApplicationContext(), "Failed to submit", Toast.LENGTH_SHORT).show();
                         Log.e("ERROR: ", error);
                     }
                 }, new URLs().getJumpURL(), params, headers, getActivity().getApplicationContext());
@@ -158,7 +223,6 @@ public class JumpFragment extends Fragment implements SensorEventListener{
         jumpTextView.setText("0");
         return view;
     }
-
 
     @Override
     public void onResume() {
@@ -176,7 +240,30 @@ public class JumpFragment extends Fragment implements SensorEventListener{
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
             return;
-        detectJump(sensorEvent.values[0], sensorEvent.timestamp);
+        double accelX = sensorEvent.values[0];
+        double accelY = sensorEvent.values[1];
+        double accelZ = sensorEvent.values[2];
+        Double v = norm(accelX, accelY, accelZ);
+        if (detect) {
+            accelerationsList.add(v);
+            timestampsList.add(sensorEvent.timestamp);
+        }
+    }
+
+
+    public void reset() {
+        jumpButton.setText("JUMP");
+        jumpProgress.setVisibility(View.GONE);
+        accelerationsList.clear();
+        timestampsList.clear();
+        detect = false;
+    }
+
+
+
+
+    public Double norm(Double x, Double y, Double z) {
+        return Math.sqrt(x*x + y*y + z*z);
     }
 
     @Override
@@ -184,29 +271,5 @@ public class JumpFragment extends Fragment implements SensorEventListener{
         return;
     }
 
-    private void detectJump(float xValue, long timestamp) {
-        if ((Math.abs(xValue) > GRAVITY_THRESHOLD)) {
-            if(timestamp - mLastTime < TIME_THRESHOLD_NS && mUp != (xValue > 0)) {
-                double jumpTime = (timestamp-mLastTime)/1.0e9;
-                height = 100 * 9.807 * jumpTime * jumpTime / 2.54;
-                jumpTextView.setText(Double.toString(height).substring(0, 5) + " in");
-                jumpButton.setText("JUMP");
-                jumpProgress.setVisibility(View.GONE);
-                onJumpDetected(!mUp);
-                onPause();
-            }
-            mUp = xValue > 0;
-            mLastTime = timestamp;
-        }
-    }
 
-    private void onJumpDetected(boolean up) {
-        // we only count a pair of up and down as one successful movement
-        if (up) {
-            Log.d("TAG", "up");
-            return;
-        }
-        Log.d("TAG", "down");
-
-    }
 }

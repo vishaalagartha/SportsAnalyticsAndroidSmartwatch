@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -42,7 +46,7 @@ public class SorenessFragment extends Fragment {
     ArrayList<String> musclesStrings = new ArrayList<>();
     private ArrayAdapter<String> listAdapter;
     private ListView musclesListView;
-    private Button sorenessSubmitButton;
+    private ImageButton sorenessSubmitButton;
     private JSONObject muscles = new JSONObject();
 
 
@@ -98,16 +102,17 @@ public class SorenessFragment extends Fragment {
 
         musclesStrings.add("Biceps");
         musclesStrings.add("Deltoids");
-        musclesStrings.add("Gastrocnemuis");
         musclesStrings.add("Gluteals");
         musclesStrings.add("Hamstrings");
-        musclesStrings.add("Latissiumus Dorsi");
         musclesStrings.add("Obliques");
         musclesStrings.add("Pectorals");
         musclesStrings.add("Quadriceps");
-        musclesStrings.add("Rectus Abdominus");
         musclesStrings.add("Trapezius");
         musclesStrings.add("Triceps");
+        for(int i=0; i<musclesStrings.size(); i++){
+            String muscle = musclesStrings.get(i);
+            musclesStrings.set(i, "   " + muscle);
+        }
         listAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, musclesStrings);
 
         musclesListView = (ListView) view.findViewById( R.id.musclesListView );
@@ -147,7 +152,7 @@ public class SorenessFragment extends Fragment {
             }
         });
 
-        sorenessSubmitButton = (Button) view.findViewById(R.id.submitSorenessButton);
+        sorenessSubmitButton = (ImageButton) view.findViewById(R.id.submitSorenessButton);
         sorenessSubmitButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Log.d("TAG", "submit soreness");
@@ -168,12 +173,12 @@ public class SorenessFragment extends Fragment {
                 appManager.getNetworkManager().jsonObjectRequest(new RequestInterface() {
                     @Override
                     public void onRequestSuccess(String response) {
-                        Toast.makeText(getActivity().getApplicationContext(), "Submitted", Toast.LENGTH_SHORT);
+                        Toast.makeText(getActivity().getApplicationContext(), "Submitted", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onRequestFailure(String error) {
-                        Toast.makeText(getActivity().getApplicationContext(), "Failed to submit", Toast.LENGTH_SHORT);
+                        Toast.makeText(getActivity().getApplicationContext(), "Failed to submit", Toast.LENGTH_SHORT).show();
 
                         Log.e("ERROR: ", error);
                     }

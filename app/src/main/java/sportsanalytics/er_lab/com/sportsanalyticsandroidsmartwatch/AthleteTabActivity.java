@@ -91,7 +91,6 @@ public class AthleteTabActivity extends Activity {
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            Log.d("TAG", String.valueOf(position));
             switch(position) {
                 case 0: return WellnessFragment.newInstance(mAthlete.mFirstName, mAthlete.mLastName, mTeam);
                 case 1: return SorenessFragment.newInstance(mAthlete.mFirstName, mAthlete.mLastName, mTeam);

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
+import android.webkit.*;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -20,10 +21,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.*;
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.net.URL;
+
 
 /**
  * Created by vishaalagartha on 2/15/18.
@@ -31,10 +37,14 @@ import java.util.Map;
 
 public class NetworkManager {
 
-    private CookieManager manager = new CookieManager();
+    private CookieManager mCookieManager = new CookieManager();
 
     NetworkManager() {
-        CookieHandler.setDefault(manager);
+        mCookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+        CookieHandler.setDefault(mCookieManager);
+    }
+
+    public void getCookieManager() {
     }
 
 
@@ -146,6 +156,8 @@ public class NetworkManager {
 
     public void request(final RequestInterface requestInterface, final String url, final int method, final Map<String, String> params,
                         final Map<String, String> headers, final Context mApplicationContext) {
+        getCookieManager();
+
         final RequestQueue queue = Volley.newRequestQueue(mApplicationContext);
         final String token = User.getToken();
         StringRequest request = new StringRequest(method, url,
@@ -181,6 +193,8 @@ public class NetworkManager {
 
     public void jsonObjectRequest(final RequestInterface requestInterface, final String url, final HashMap<String, Object> params,
                         final Map<String, String> headers, final Context mApplicationContext) {
+        getCookieManager();
+
         final RequestQueue queue = Volley.newRequestQueue(mApplicationContext);
         final String token = User.getToken();
         JsonObjectRequest request = new JsonObjectRequest(url, new JSONObject(params),

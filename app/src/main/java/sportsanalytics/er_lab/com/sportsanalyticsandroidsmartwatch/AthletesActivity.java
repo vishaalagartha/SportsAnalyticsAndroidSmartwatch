@@ -39,7 +39,7 @@ public class AthletesActivity extends Activity {
         for (int i = 0; i < athletesArray.size(); i++) {
             try {
                 jObject = new JSONObject(athletesArray.get(i));
-                athletesStrings.add(jObject.getString("firstName") + " " + jObject.getString("lastName"));
+                athletesStrings.add("      " + jObject.getString("firstName") + " " + jObject.getString("lastName"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

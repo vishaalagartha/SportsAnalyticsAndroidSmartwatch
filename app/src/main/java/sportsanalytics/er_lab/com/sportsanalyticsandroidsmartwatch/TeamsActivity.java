@@ -81,7 +81,7 @@ public class TeamsActivity extends Activity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        Toast.makeText(getApplicationContext(), "Logged in successfully", Toast.LENGTH_SHORT);
+        Toast.makeText(getApplicationContext(), "Logged in successfully", Toast.LENGTH_SHORT).show();
 
     }
 

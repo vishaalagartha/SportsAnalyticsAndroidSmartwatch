@@ -19,26 +19,37 @@ public class MainActivity extends WearableActivity {
         String password = mManager.loadUserPassword(this.getApplicationContext());
         final Context context = getApplicationContext();
 
-        mManager.getNetworkManager().login(email, password, new LoginInterface() {
-            @Override
-            public void onLoginSuccess(User user) {
-                if(user!=null) {
-                    mManager.setActiveUser(user);
-                    mManager.saveActiveUser(context);
-                    Intent teamsIntent = new Intent(context, TeamsActivity.class);
-                    teamsIntent.putExtra("user", (Serializable) user);
-                    startActivity(teamsIntent);
-                } else {
+        if (email!=null && password!=null) {
+            mManager.getNetworkManager().login(email, password, new LoginInterface() {
+                @Override
+                public void onLoginSuccess(User user) {
+                    if (user != null) {
+                        Log.d("TAG", "Login successfull");
+
+                        mManager.setActiveUser(user);
+                        mManager.saveActiveUser(context);
+                        Intent teamsIntent = new Intent(context, TeamsActivity.class);
+                        teamsIntent.putExtra("user", (Serializable) user);
+                        startActivity(teamsIntent);
+                    } else {
+                        Log.d("TAG", "Login failure");
+
+                        Intent loginIntent = new Intent(context, LoginActivity.class);
+                        startActivity(loginIntent);
+                    }
+                }
+
+                @Override
+                public void onLoginFailure(String error) {
+                    Log.d("TAG", "Login failure");
+
                     Intent loginIntent = new Intent(context, LoginActivity.class);
                     startActivity(loginIntent);
                 }
-            }
-
-            @Override
-            public void onLoginFailure(String error) {
-                Intent loginIntent = new Intent(context, LoginActivity.class);
-                startActivity(loginIntent);
-            }
-        }, getApplicationContext());
+            }, getApplicationContext());
+        } else {
+            Intent loginIntent = new Intent(context, LoginActivity.class);
+            startActivity(loginIntent);
+        }
     }
 }
